@@ -11,4 +11,4 @@ My own version of Cheat Engine for Browsers.
 
 - Wasm memory Editing
 
-More features will be added in future updates
+More features will be added in future updates.
