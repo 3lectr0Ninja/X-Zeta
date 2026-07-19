@@ -9,6 +9,6 @@ My own version of Cheat Engine for Browsers.
 
 ## Developing Features:-
 
--Wasm memory Editing
+- Wasm memory Editing
 
 More features will be added in future updates.
