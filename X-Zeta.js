@@ -1,47 +1,47 @@
 const XZ = window.XZ = {
-    patched :false ,
     info : {
-        developer:"3lectr0N!nj@",
-        name: "X-Zeta",
-        version: "1.0"
+        Developer:"3lectr0N!nj@",
+        Name: "X-Zeta",
+        Version: "1.0",
+        ExistingFeatures:["WireFrame","Speed-Hack"]
     },
+    patched :false,
     loggers:{
         wireframe:false
     },
-    wireframe: {
-        enabled:false,
-        skipUI: true,
-        count: {
+    settings:{
+        wireframe: {
+            enabled:false,
+            skipUI: true,
+            count: {
             min: 7,
             max: Infinity
-        }
+        },
+            onDraw(gl, args){
+        const program = gl.getParameter(gl.CURRENT_PROGRAM);
+        const [mode, count, type, offset] = args;
+        if(XZ.loggers.wireframe)console.log({mode,count,type,offset,program});
+        if (!this.enabled) return;
+        const isUI = this.skipUI && program && program.isUIProgram === true;
+        if (!isUI && count >= this.count.min && count <= this.count.max) {args[0] = gl.LINES;}
     },
-    speedhack :{
+            wireframeHandler:{
+            apply(target, gl, args) {
+        XZ.settings.wireframe.onDraw(gl, args);
+        return Reflect.apply(target, gl, args);
+    }
+        },
+    },
+        speedhack :{
         value: 1,
         startReal: performance.now(),
         startFake: performance.now(),
         originalPerformanceNow: performance.now.bind(performance),
     },
-    memory:null,
-    Addresses:{},
-    wireframeHandler:{
-    apply(target, gl, args) {
-        XZ.onDraw(gl, args);
-        return Reflect.apply(target, gl, args);
-    }
     },
-    onDraw(gl, args) {
-        const program = gl.getParameter(gl.CURRENT_PROGRAM);
-        const [mode, count, type, offset] = args;
-        if(XZ.loggers.wireframe)console.log({mode,count,type,offset,program});
-        if (!this.wireframe.enabled) return;
-        const isUI = this.wireframe.skipUI && program && program.isUIProgram === true;
-        if (!isUI && count >= this.wireframe.count.min && count <= this.wireframe.count.max) {args[0] = gl.LINES;}
-    },
-    SetWireFrameCount(min=7,max=Infinity){
-            if (typeof max !== "number" || max <= 0 || typeof min !== "number" || min <= 0) return alert("Invalid count")
-            XZ.wireframe.count={max,min}
-        },
+    memory:[],
+    scanned:0,
+    Scans:{},
     PatchAll(){
         if(this.patched) return;
         this.patched = true;
@@ -50,28 +50,32 @@ const XZ = window.XZ = {
     if (!Context) return;
 
     const proto = Context.prototype;
-    if (proto.drawElements)proto.drawElements = new Proxy(proto.drawElements, XZ.wireframeHandler);
-    if (proto.drawElementsInstanced)proto.drawElementsInstanced = new Proxy(proto.drawElementsInstanced, XZ.wireframeHandler);
+    if (proto.drawElements)proto.drawElements = new Proxy(proto.drawElements, XZ.settings.wireframe.wireframeHandler);
+    if (proto.drawElementsInstanced)proto.drawElementsInstanced = new Proxy(proto.drawElementsInstanced, XZ.settings.wireframe.wireframeHandler);
 });
         //SPEED-HACk PATCH
         performance.now = function(){
-    if(XZ.speedhack.value === 1){return XZ.speedhack.originalPerformanceNow()};
-    const realTime = XZ.speedhack.originalPerformanceNow();
-    return XZ.speedhack.startFake + (realTime - XZ.speedhack.startReal)*XZ.speedhack.value};
+    if(XZ.settings.speedhack.value === 1){return XZ.settings.speedhack.originalPerformanceNow()};
+    const realTime = XZ.settings.speedhack.originalPerformanceNow();
+    return XZ.settings.speedhack.startFake + (realTime - XZ.settings.speedhack.startReal)*XZ.settings.speedhack.value};
     },
     Features:{
         //WIREFRAME
+        SetWireFrameCount(min=7,max=Infinity){
+            if (typeof max !== "number" || max <= 0 || typeof min !== "number" || min <= 0) return alert("Invalid count")
+            XZ.settings.wireframe.count={max,min}
+        },
         WireFrame(){
-            XZ.wireframe.enabled = !XZ.wireframe.enabled
-            return console.log("WireFrame: " + (XZ.wireframe.enabled ? "Activated" : "Deactivated"))
+            XZ.settings.wireframe.enabled = !XZ.settings.wireframe.enabled
+            return console.log("WireFrame: " + (XZ.settings.wireframe.enabled ? "Activated" : "Deactivated"))
         },
         //SPEEDHACK
         SetSpeed(value){
             if (typeof value !== "number" || value <= 0) return alert("Invalid speed");
-            const current = XZ.speedhack.originalPerformanceNow();
-            XZ.speedhack.startFake = current;
-            XZ.speedhack.startReal = current;
-            XZ.speedhack.value = value;
+            const current = XZ.settings.speedhack.originalPerformanceNow();
+            XZ.settings.speedhack.startFake = current;
+            XZ.settings.speedhack.startReal = current;
+            XZ.settings.speedhack.value = value;
             return console.log("Speed Set to:-" + value)
    },
     }
