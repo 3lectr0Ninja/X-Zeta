@@ -1,4 +1,4 @@
-const WireFrame = {
+window.WireFrame = {
     name : "wireframe",
     settings: {
         enabled: false,
