@@ -1,4 +1,5 @@
 window.SpeedHack={
+  name = "speedhack",
   settings:{
             value: 1,
             startReal: performance.now(),
