@@ -1,4 +1,4 @@
-window.SpeedHack:{
+window.SpeedHack={
   settings:{
             value: 1,
             startReal: performance.now(),
