@@ -27,7 +27,7 @@ Example:-
 // @run-at       document-start
 // ==/UserScript==
 
-//whatever changes u want to make using engine
+//whatever changes u want to make using X-Zeta
 //ur code
 //at last
 await XZ.DownloadPlugins()
