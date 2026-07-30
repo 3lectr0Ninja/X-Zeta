@@ -45,4 +45,3 @@ const XZ = window.XZ = {
     },
     Features: {}
 };
-await XZ.DownloadPlugins()
