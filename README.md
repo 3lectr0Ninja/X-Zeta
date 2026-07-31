@@ -9,7 +9,9 @@ My own version of Cheat Engine for Browsers.
 
 ## Developing Features:-
 
-- Wasm memory Editing
+- Wasm Inspector
+- Wasm Decoder
+- Wasm2Wat
 
 More features will be added in future updates.
 
